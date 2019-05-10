@@ -10,10 +10,28 @@
     {% for match in match_list %}
         {% if match | length == 2 %}
             {% for competitor in match %}
-                <li>Competitor: {{ competitor }}</li>
+                <li>Competitor: {{ competitor.name }}</li>
             {% endfor %}
+            <form action="{{ url_for('submit_match_result', competitor_1=match[0].id, competitor_2=match[1].id) }}" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.competitor1.label }}<br>
+                    {{ form.competitor1(size=32) }}
+                    {% for error in form.competitor1.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.competitor2.label }}<br>
+                    {{ form.competitor2(size=32) }}
+                    {% for error in form.competitor2.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ form.submit() }}</p>
+            </form>
         {% else %}
-            <li>Free Pass: {{ match[0] }}</li>
+            <li>Free Pass: {{ match[0].name }}</li>
         {% endif %}
         <br>
     {% endfor %}

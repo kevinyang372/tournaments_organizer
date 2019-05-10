@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from .forms import RegistrationForm
+from .forms import RegistrationForm, MatchForm
 import random
 import os
 
@@ -37,7 +37,6 @@ def index():
 def add_competitors():
     competitors_num = Competitor.query.count()
     form = RegistrationForm()
-    print('got it')
 
     if form.validate_on_submit():
         new_competitor = Competitor(name = form.name.data, status = 'in')
@@ -51,25 +50,43 @@ def add_competitors():
 
 @app.route('/round')
 def round():
+    form = MatchForm()
     match_list = []
     
     competitors = Competitor.query.filter_by(status="in").all()
-    count = 1
 
-    shuffled_list = [t.name for t in competitors]
+    shuffled_list = [t for t in competitors]
     random.shuffle(shuffled_list)
 
-    for i in shuffled_list:
-        if count % 2 == 1:
-            match_list.append([i])
+    for i in range(len(shuffled_list)):
+        if i % 2 == 0:
+            match_list.append([shuffled_list[i]])
         else:
-            match_list[-1].append(i)
+            match_list[-1].append(shuffled_list[i])
 
-        count += 1
+    return render_template('round.html', match_list = match_list, form = form)
 
-    print(match_list)
+@app.route('/submit_match_result/<int:competitor_1>/<int:competitor_2>', methods=["POST"])
+def submit_match_result(competitor_1, competitor_2):
+    form = MatchForm()
 
-    return render_template('round.html', match_list = match_list)
+    if form.validate_on_submit():
+        s1 = int(form.competitor1.data)
+        s2 = int(form.competitor2.data)
+
+        new_round = Round(competitor_1 = competitor_1, competitor_2 = competitor_2, competitor_1_score = s1, competitor_2_score = s2)
+
+        if s1 > s2:
+            competitor = Competitor.query.filter_by(id = competitor_2).first()
+        else:
+            competitor = Competitor.query.filter_by(id = competitor_1).first()
+
+        competitor.status = "out"
+
+        db.session.add(new_round)
+        db.session.commit()
+
+    return 'Successfully Logged'
 
 
 if __name__ == '__main__':
