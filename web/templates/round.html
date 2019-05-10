@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Round</title>
+</head>
+<body>
+    <h1> Round Competition </h1>
+    <ul>
+    {% for match in match_list %}
+        {% if match | length == 2 %}
+            {% for competitor in match %}
+                <li>Competitor: {{ competitor }}</li>
+            {% endfor %}
+        {% else %}
+            <li>Free Pass: {{ match[0] }}</li>
+        {% endif %}
+        <br>
+    {% endfor %}
+    </ul>
+</body>
+</html>

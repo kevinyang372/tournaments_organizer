@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from .forms import RegistrationForm
+import random
 import os
 
 app = Flask(__name__)
@@ -10,7 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 db = SQLAlchemy(app)
-
 
 class Competitor(db.Model):
     __tablename__ = 'competitor'
@@ -21,8 +21,8 @@ class Competitor(db.Model):
 class Round(db.Model):
     __tablename__ = 'round'
     id = db.Column(db.Integer, primary_key=True)
-    competitor_1 = db.Column(db.Integer, ForeignKey('competitor.id'))
-    competitor_2 = db.Column(db.Integer, ForeignKey('competitor.id'))
+    competitor_1 = db.Column(db.Integer, db.ForeignKey('competitor.id'))
+    competitor_2 = db.Column(db.Integer, db.ForeignKey('competitor.id'))
     competitor_1_score = db.Column(db.Integer)
     competitor_2_score = db.Column(db.Integer)
 
@@ -49,7 +49,28 @@ def add_competitors():
 
     return render_template('add_competitors.html', competitors_num=competitors_num, form=form)
 
-@app.route('/')
+@app.route('/round')
+def round():
+    match_list = []
+    
+    competitors = Competitor.query.filter_by(status="in").all()
+    count = 1
+
+    shuffled_list = [t.name for t in competitors]
+    random.shuffle(shuffled_list)
+
+    for i in shuffled_list:
+        if count % 2 == 1:
+            match_list.append([i])
+        else:
+            match_list[-1].append(i)
+
+        count += 1
+
+    print(match_list)
+
+    return render_template('round.html', match_list = match_list)
+
 
 if __name__ == '__main__':
     app.run()
