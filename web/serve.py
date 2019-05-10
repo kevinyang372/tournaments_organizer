@@ -13,9 +13,18 @@ db = SQLAlchemy(app)
 
 
 class Competitor(db.Model):
+    __tablename__ = 'competitor'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     status = db.Column(db.String(5))
+
+class Round(db.Model):
+    __tablename__ = 'round'
+    id = db.Column(db.Integer, primary_key=True)
+    competitor_1 = db.Column(db.Integer, ForeignKey('competitor.id'))
+    competitor_2 = db.Column(db.Integer, ForeignKey('competitor.id'))
+    competitor_1_score = db.Column(db.Integer)
+    competitor_2_score = db.Column(db.Integer)
 
 db.create_all()
 db.session.commit()
@@ -39,6 +48,8 @@ def add_competitors():
         return redirect(url_for('add_competitors'))
 
     return render_template('add_competitors.html', competitors_num=competitors_num, form=form)
+
+@app.route('/')
 
 if __name__ == '__main__':
     app.run()
