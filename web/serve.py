@@ -7,11 +7,13 @@ import os
 
 app = Flask(__name__)
 
+# Initialize the application
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 db = SQLAlchemy(app)
 
+# Define data tables
 class Competitor(db.Model):
     __tablename__ = 'competitor'
     id = db.Column(db.Integer, primary_key=True)
@@ -29,10 +31,12 @@ class Round(db.Model):
 db.create_all()
 db.session.commit()
 
+# Index page
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Registering new competitors
 @app.route('/add_competitors', methods=["GET", "POST"])
 def add_competitors():
     competitors_num = Competitor.query.count()
@@ -48,6 +52,7 @@ def add_competitors():
 
     return render_template('add_competitors.html', competitors_num=competitors_num, form=form)
 
+# Next Round
 @app.route('/round')
 def round():
     form = MatchForm()
@@ -55,6 +60,7 @@ def round():
     
     competitors = Competitor.query.filter_by(status="in").all()
 
+    # Shuffles the list to make the order random
     shuffled_list = [t for t in competitors]
     random.shuffle(shuffled_list)
 
@@ -66,6 +72,7 @@ def round():
 
     return render_template('round.html', match_list = match_list, form = form)
 
+# Set the match result
 @app.route('/submit_match_result/<int:competitor_1>/<int:competitor_2>', methods=["POST"])
 def submit_match_result(competitor_1, competitor_2):
     form = MatchForm()
@@ -81,13 +88,16 @@ def submit_match_result(competitor_1, competitor_2):
         else:
             competitor = Competitor.query.filter_by(id = competitor_1).first()
 
+        # Eliminate the loser
         competitor.status = "out"
 
         db.session.add(new_round)
         db.session.commit()
 
+    # This needs future improvement
     return 'Successfully Logged'
 
+# Summary Page
 @app.route('/round_summary')
 def round_summary():
     all_rounds = Round.query.all()
