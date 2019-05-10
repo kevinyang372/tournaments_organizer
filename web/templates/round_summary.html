@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Tournament</title>
+</head>
+<body>
+    <h1> All rounds: </h1>
+    <ul>
+    {% for round in all_rounds %}
+        <li>Competitor 1: {{ round.competitor_1 }}</li>
+        <li>Competitor 2: {{ round.competitor_2 }}</li>
+        <li>Competitor 1 Score: {{ round.competitor_1_score }}</li>
+        <li>Competitor 2 Score: {{ round.competitor_2_score }}</li>
+        <br>
+    {% endfor %}
+    </ul>
+</body>
+</html>

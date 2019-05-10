@@ -88,6 +88,16 @@ def submit_match_result(competitor_1, competitor_2):
 
     return 'Successfully Logged'
 
+@app.route('/round_summary')
+def round_summary():
+    all_rounds = Round.query.all()
+
+    summary = []
+    for i in all_rounds:
+        summary.append({'competitor_1': Competitor.query.filter_by(id = i.competitor_1).first().name, 'competitor_2': Competitor.query.filter_by(id = i.competitor_2).first().name, 'competitor_1_score': i.competitor_1_score, 'competitor_2_score': i.competitor_2_score})
+
+    return render_template('round_summary.html', all_rounds = summary)
+
 
 if __name__ == '__main__':
     app.run()
