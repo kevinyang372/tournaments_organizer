@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from .forms import RegistrationForm, MatchForm
@@ -80,6 +80,25 @@ def submit_match_result(competitor_1, competitor_2):
     if form.validate_on_submit():
         s1 = int(form.competitor1.data)
         s2 = int(form.competitor2.data)
+
+        if s1 < 15 and s2 < 15:
+            response = {
+                'status_code': 500,
+                'status': 'Wrong Score Entry. Both lower than 15.'
+            }
+            return jsonify(response), 500
+        elif (s1 > 15 or s2 > 15) and (abs(s2 - s1) != 2):
+            response = {
+                'status_code': 500,
+                'status': 'Wrong Score Entry.'
+            }
+            return jsonify(response), 500
+        elif s1 == 15 and abs(s2 - s1) < 2:
+            response = {
+                'status_code': 500,
+                'status': 'Wrong Score Entry. Match should continue.'
+            }
+            return jsonify(response), 500
 
         new_round = Round(competitor_1 = competitor_1, competitor_2 = competitor_2, competitor_1_score = s1, competitor_2_score = s2)
 
