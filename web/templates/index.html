@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Welcome To the Tournament</title>
 </head>
 <body>
-    <p>Hello World!</p>
+    <p>Create New Tournament</p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <p style="margin-top: 50px">Access Created Tournaments</p>
+    {% for t in tournaments %}
+        <a href="{{ url_for('add_competitors', tournament_id = t.id) }}">{{t.name}}</a>
+        <br>
+    {% endfor %}
 </body>
 </html>

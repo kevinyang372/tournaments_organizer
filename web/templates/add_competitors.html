@@ -20,6 +20,6 @@
             <p>{{ form.submit() }}</p>
         </form>
     {% endblock %}
-    <a href="{{ url_for('round') }}">Go to round info</a>
+    <a href="{{ url_for('round',  tournament_id = tournament_id, round_id = 0) }}">Go to round info</a>
 </body>
 </html>

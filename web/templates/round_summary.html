@@ -8,14 +8,21 @@
     <h1> All rounds: </h1>
     <ul>
     {% for round in all_rounds %}
-        <li>Competitor 1: {{ round.competitor_1 }}</li>
-        <li>Competitor 2: {{ round.competitor_2 }}</li>
-        <li>Competitor 1 Score: {{ round.competitor_1_score }}</li>
-        <li>Competitor 2 Score: {{ round.competitor_2_score }}</li>
-        <br>
+        {% if round | length == 2 %}
+            <li>Round numer: {{ round.round }}</li>
+            <li>Free Pass: {{ round.competitor_1 }}</li>
+            <br>
+        {% else %}
+            <li>Round numer: {{ round.round }}</li>
+            <li>Competitor 1: {{ round.competitor_1 }}</li>
+            <li>Competitor 2: {{ round.competitor_2 }}</li>
+            <li>Competitor 1 Score: {{ round.competitor_1_score }}</li>
+            <li>Competitor 2 Score: {{ round.competitor_2_score }}</li>
+            <br>
+        {% endif %}
     {% endfor %}
     </ul>
-    <a href="{{ url_for('round') }}">Go to round info</a>
-    <a href="{{ url_for('add_competitors') }}">Add Competitors</a>
+    <a href="{{ url_for('index') }}">Start New Tournament</a>
+    <a href="{{ url_for('round', tournament_id = tournament_id, round_id = 0) }}">Go to round info</a>
 </body>
 </html>

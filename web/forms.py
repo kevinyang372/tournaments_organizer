@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField
-from wtforms.validators import Length
+from wtforms.validators import Length, DataRequired
 
 # Registration Form (add_competitors)
 class RegistrationForm(FlaskForm):
@@ -12,3 +12,7 @@ class MatchForm(FlaskForm):
     competitor1 = IntegerField('Competitor One\'s Score')
     competitor2 = IntegerField('Competitor Two\'s Score')
     submit = SubmitField("Send Score")
+
+class TournamentForm(FlaskForm):
+    name = StringField('Tournament Name', validators=[DataRequired()])
+    submit = SubmitField("Next Step")

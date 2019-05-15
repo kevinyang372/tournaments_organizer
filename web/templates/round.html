@@ -5,37 +5,49 @@
     <title>Round</title>
 </head>
 <body>
-    <h1> Round Competition </h1>
-    <ul>
-    {% for match in match_list %}
-        {% if match | length == 2 %}
-            {% for competitor in match %}
-                <li>Competitor: {{ competitor.name }}</li>
-            {% endfor %}
-            <form action="{{ url_for('submit_match_result', competitor_1=match[0].id, competitor_2=match[1].id) }}" method="post" novalidate>
-                {{ form.hidden_tag() }}
-                <p>
-                    {{ form.competitor1.label }}<br>
-                    {{ form.competitor1(size=32) }}
-                    {% for error in form.competitor1.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>
-                    {{ form.competitor2.label }}<br>
-                    {{ form.competitor2(size=32) }}
-                    {% for error in form.competitor2.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>{{ form.submit() }}</p>
-            </form>
-        {% else %}
-            <li>Free Pass: {{ match[0].name }}</li>
-        {% endif %}
+    <h1> Round {{round_id}} </h1>
+    {% if match_list | length == 2 and match_list[1] == 'final'%}
+        <p>Final Winner is {{match_list[0].name}}
         <br>
-    {% endfor %}
-    </ul>
-    <a href="{{ url_for('round') }}">Next Round</a>
+        <a href="{{ url_for('round_summary', tournament_id = tournament_id) }}">Tournament Summary</a>
+    {% else %}
+        <ul>
+        {% for match in match_list %}
+            {% if match | length == 3 %}
+                {% for i in range(2) %}
+                    <li>Competitor: {{ match[i].name }}</li>
+                {% endfor %}
+                {% if match[2] %}
+                    <form action="{{ url_for('submit_match_result', tournament_id = tournament_id, round_id = round_id, competitor_1=match[0].id, competitor_2=match[1].id) }}" method="post" novalidate>
+                        {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.competitor1.label }}<br>
+                            {{ form.competitor1(size=32) }}
+                            {% for error in form.competitor1.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+                        <p>
+                            {{ form.competitor2.label }}<br>
+                            {{ form.competitor2(size=32) }}
+                            {% for error in form.competitor2.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+                        <p>{{ form.submit() }}</p>
+                    </form>
+                {% else %}
+                    <p> Match Complete </p>
+                {% endif %}
+            {% else %}
+                <li>Free Pass: {{ match[0].name }}</li>
+            {% endif %}
+            <br>
+        {% endfor %}
+        </ul>
+        {% if could_do_next_round %}
+            <a href="{{ url_for('round', tournament_id = tournament_id, round_id = round_id + 1) }}">Next Round</a>
+        {% endif %}
+    {% endif %}
 </body>
 </html>
