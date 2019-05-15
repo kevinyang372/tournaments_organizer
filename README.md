@@ -1,18 +1,18 @@
 # Tournaments Organizer
 Simple Flask Website to Help Organize Single Elimination Competitions
 
-List of Available Pages And Functionalities
+#### List of Available Pages And Functionalities
 * `'/'`: placeholder for the index page
 * `'/add_competitors'`: registrate new competitors
 * `'/round'`: see the competition matchup for each round
 * `'/round_summary'`: see the summary of all the rounds
 
-Since this will be a prototype that will be continually built upon, the following is also included:
+#### Since this will be a prototype that will be continually built upon, the following is also included:
 * `Dockerfile`: for future deployment
 * `.travis.yml`: continuous integration
 * `integration_test`: integration tests for the application
 
-Future Improvements:
+#### Future Improvements:
 * `/round` page still needs significant improvement. Currently, after users submitted the form, they need to manually click go back to keep entering infos
 * `add_competitor` form hasn't handle situations when entering competitors with the same name
 * Better displays
