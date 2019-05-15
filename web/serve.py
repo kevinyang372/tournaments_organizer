@@ -64,6 +64,8 @@ def index():
 def add_competitors(tournament_id):
     competitors_num = Competitor.query.filter_by(tournament=tournament_id).count()
     form = RegistrationForm()
+    matches = Round.query.filter_by(tournament = tournament_id).all()
+    could_register = len(matches) == 0
 
     if form.validate_on_submit():
         new_competitor = Competitor(name = form.name.data, status = 'in', tournament = tournament_id)
@@ -73,7 +75,7 @@ def add_competitors(tournament_id):
         flash(f'Sucessfully added the competitor {form.name.data}!', 'success')
         return redirect(url_for('add_competitors', tournament_id = tournament_id))
 
-    return render_template('add_competitors.html', competitors_num=competitors_num, tournament_id = tournament_id, form=form)
+    return render_template('add_competitors.html', competitors_num=competitors_num, tournament_id = tournament_id, form=form, could_register = could_register)
 
 # Next Round
 @app.route('/round/<int:tournament_id>/<int:round_id>')

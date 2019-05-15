@@ -6,20 +6,25 @@
 </head>
 <body>
     <h1> Registered competitors number: {{ competitors_num }}</h1>
-    {% block content %}
-        <h1>Log New Competitor</h1>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.name.label }}<br>
-                {{ form.name(size=32) }}
-                {% for error in form.name.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>{{ form.submit() }}</p>
-        </form>
-    {% endblock %}
-    <a href="{{ url_for('round',  tournament_id = tournament_id, round_id = 0) }}">Go to round info</a>
+    {% if could_register %}
+        {% block content %}
+            <h1>Log New Competitor</h1>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.name.label }}<br>
+                    {{ form.name(size=32) }}
+                    {% for error in form.name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ form.submit() }}</p>
+            </form>
+        <a href="{{ url_for('round',  tournament_id = tournament_id, round_id = 0) }}">Complete Registration</a>
+        {% endblock %}
+    {% else %}
+        <p>Registration is already complete</p>
+        <a href="{{ url_for('round',  tournament_id = tournament_id, round_id = 0) }}">Go to round info</a>
+    {% endif %}
 </body>
 </html>
